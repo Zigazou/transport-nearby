@@ -1,0 +1,131 @@
+# String corrections used for normalization of stations/routes names:
+# - Each line contains two strings separated by a tabulation character.
+# - The first string is the string to be replaced.
+# - The second string is the string to use instead of the first string.
+# - Replacements are done in the order of appearance.
+# - All characters are taken into account, especially spaces.
+# - Lowercase characters ≠ uppercase characters.
+# - Lines starting with '#' are comments and ignored. 
+-En-	-en-
+ En 	 en 
+-Et-	-et-
+ Et 	 et 
+-De-	-de-
+ De 	 de 
+-À-	-à-
+ À 	 à 
+-Du-	-du-
+ Du 	 du 
+-Le-	-le-
+ Le 	 le 
+-La-	-la-
+ La 	 la 
+-L'	-l' 
+ L'	 l'
+-Les-	-les-
+ Les 	 les 
+-Lès-	-lès-
+ Lès 	 lès 
+-Des-	-des-
+ Des 	 des 
+-Aux-	-aux-
+ Aux 	 aux 
+-D'	-d' 
+ D'	 d'
+-Sur-	-sur-
+ Sur 	 sur 
+-Sous-	-sous-
+ Sous 	 sous 
+ Via 	 via 
+Pt-	Petit-
+Cfa	CFA
+C.H.U.	CHU
+C.H.U	CHU
+Chu 	CHU 
+ Chu	 CHU
+Ch 	CH 
+Mtc	MTC
+Ime 	IME 
+Edf	EDF
+Iut	IUT
+Ids	IDS
+Z.I. 	ZI 
+Zi	ZI
+Z.A. 	ZA 
+Za 	ZA 
+Z.C.	ZC
+Zc	ZC
+Ii	II
+Rd	RD
+S.N.C.F.	SNCF
+Sncf	SNCF
+Caf	CAF
+ CAF	 Caf
+Lycee	Lycée
+Hotel	Hôtel
+Cloitre	Cloître
+Bruyeres	Bruyères
+Mendes	Mendès
+Jaures	Jaurès
+Cathedrale	Cathédrale
+Theatre	Théâtre
+Orleans	Orléans
+Exupery	Exupéry
+Republique	République
+Saens	Saëns
+Boissiere	Boissière
+General	Général
+Cite    Cité 
+Ecole	École
+Etienne	Étienne
+Eluard	Éluard
+Ecalles	Écalles
+Eglise	Église
+Ecureuil	Écureuil
+Eglantines	Églantines
+Epine	Épine
+Epinay	Épinay
+Evreux	Évreux
+Edith	Édith
+Elisa	Élisa
+Equerre	Équerre
+Ecameaux	Écameaux
+Jumieges	Jumièges
+Musee   Musée
+Embarcadere	Embarcadère
+Deville-les-Rouen	Déville-lès-Rouen
+Ile	Île
+Ste 	Sainte 
+Ste-	Sainte-
+St-	Saint-
+St 	Saint 
+J. Brel	Jacques Brel
+J. Hannier	Jean Hannier
+J.Y. Cousteau	Jacques-Yves Cousteau
+J.-Y. Cousteau	Jacques-Yves Cousteau
+Jb de la Salle	Jean Baptiste de la Salle
+Jf Kennedy	John Fitzgerald Kennedy
+J. l'Herminier	Jean l'Herminier
+J.E. Blanche	Jacques-Émile Blanche
+J.B. Clément	Jean-Baptiste Clément
+Jacques Prevert	Jacques Prévert
+L. de Vinci	Léonard de Vinci
+Coll.	Collège
+E. Branly	Édouard Branly
+E. Lacroix	Eugène Lacroix
+M. Sauvage	Marcel Sauvage
+M. Genevoix	Maurice Genevoix
+P. de Coubertin	Pierre de Coubertin
+A de Noailles	Anne de Noailles
+N. Armstrong	Neil Armstrong
+V. Schoelcher	Victor Schoelcher
+H. Langlois	Hyacinthe Langlois
+M. de Montaigne	Michel de Montaigne
+Bosc-le-H 	Bosc-le-Hard 
+Donald'S	Donald's
+Lecoeur	Lecœur
+oeuf	œuf
+Normandie Lorraine	Normandie-Lorraine
+U. du Bois	Universitaire du Bois
+Rond-Point	Rond-point
+Vieux Marche    Vieux Marché

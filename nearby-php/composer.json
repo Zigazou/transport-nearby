@@ -1,0 +1,23 @@
+{
+    "name": "zigazou/transport-nearby",
+    "description": "Find nearby transportation stops and bike facilities in Métropole Rouen Normandie",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^10"
+    },
+    "license": "GPL-3.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "Zigazou\\TransportNearby\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Frédéric BISSON",
+            "email": "zigazou@protonmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {}
+}
