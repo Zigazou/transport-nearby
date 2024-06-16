@@ -73,6 +73,14 @@ DATA_FILES = {
         'datagouv_id': "5ced52ed8b4c4177b679d377",
         'resource_id': 81628,
         'temp_file': "/tmp/atoumod.gtfs.zip"
+    },
+
+    "flixbus": {
+        'type': 'gtfs',
+        'description': 'Flixbus GTFS data',
+        'datagouv_id': "5c6ad5248b4c411c3d7ae435",
+        'resource_id': 11681,
+        'temp_file': "/tmp/flixbus.gtfs.zip"
     }
 }
 
@@ -100,7 +108,9 @@ FIELD_DROPS = [
     "trip_short_name", "trip_headsign", "block_id", "shape_id", "arrival_time",
     "departure_time", "pickup_type", "drop_off_type", "monday", "tuesday",
     "wednesday", "thursday", "friday", "saturday", "sunday", "stop_code",
-    "location_type", "parent_station"
+    "location_type", "parent_station", "bikes_allowed", "trip_bikes_allowed",
+    "platform_code", "stop_times.route_short_name", "trips.route_short_name",
+    "ticketing_trip_id", "ticketing_type"
 ]
 
 
@@ -285,7 +295,8 @@ def import_table(cursor, table_name: str, base_id: str, records: list, ignore=Fa
         values = {
             key: (base_id + record[key] if key in FIELD_IDS else record[key])
             for key in record
-            if key not in FIELD_DROPS
+            if (key not in FIELD_DROPS and
+                f"{table_name}.{key}" not in FIELD_DROPS)
         }
 
         cursor.execute(
@@ -799,6 +810,10 @@ def import_atoumod_gtfs_data(db_filename: str):
     """Import Réseau Astuce GTFS data into the database."""
     import_gtfs_data(DATA_FILES['atoumod']['temp_file'], 'ATM-', db_filename)
 
+def import_flixbus_gtfs_data(db_filename: str):
+    """Import FlixBus GTFS data into the database."""
+    import_gtfs_data(DATA_FILES['flixbus']['temp_file'], 'FLX-', db_filename)
+
 
 def generate_transport_database(db_filename: str):
     """Generate the transport database.
@@ -817,6 +832,7 @@ def generate_transport_database(db_filename: str):
 
     process_steps = [
         ("Creating database", create_database),
+        ("Importing FlixBus GTFS data", import_flixbus_gtfs_data),
         ("Importing Réseau Astuce GTFS data", import_astuce_gtfs_data),
         ("Importing AtouMod GTFS data", import_atoumod_gtfs_data),
         ("Generating cache between stops and routes", generate_gtfs_cache),
