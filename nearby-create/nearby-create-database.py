@@ -149,6 +149,11 @@ class SQLiteDB():
 
     def __exit__(self, *args):
         self.connection.commit()
+        
+        # Let SQLite3 analyze the database to optimize future queries.
+        self.cursor.execute("PRAGMA analysis_limit = 40000")
+        self.cursor.execute("PRAGMA optimize")
+
         self.connection.close()
 
 

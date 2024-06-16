@@ -1,1 +1,4 @@
 transport.db
+transport.db-wal
+transport.db-shm
+.phpunit.result.cache
