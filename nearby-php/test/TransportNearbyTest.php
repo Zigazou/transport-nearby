@@ -181,4 +181,87 @@ final class TransportNearbyTest extends TestCase
     $this->assertEquals($expected, $actual);
   }
 
+  public function testHotelDeVille(): void
+  {
+    $transport = new TransportNearby(dirname(__FILE__) . "/test-transport.db");
+
+    $actual = $transport->prettyFindCycleStops(
+      49.44343032024553,
+      1.0989513522256456,
+      80.0
+    );
+
+    $expected = [
+      '1 - Général de Gaulle' => [
+        'points' => [
+          0 => [
+            'type' => 4,
+            'name' => '1 - Général de Gaulle',
+            'free' => 0,
+            'distance' => 25,
+            'lat' => 49.44329903078631,
+            'lon' => 1.0986720509862948,
+          ],
+        ],
+        'distance_min' => 25,
+        'distance_max' => 25,
+      ],
+      '' =>   [
+        'points' => [
+          0 => [
+            'type' => 1,
+            'name' => NULL,
+            'free' => 0,
+            'distance' => 65,
+            'lat' => 49.442978,
+            'lon' => 1.098388,
+          ],
+          1 => [
+            'type' => 0,
+            'name' => NULL,
+            'free' => 1,
+            'distance' => 66,
+            'lat' => 49.44400637,
+            'lon' => 1.098717453,
+          ],
+          2 => [
+            'type' => 0,
+            'name' => NULL,
+            'free' => 1,
+            'distance' => 70,
+            'lat' => 49.44347937,
+            'lon' => 1.09992111,
+          ],
+          3 => [
+            'type' => 0,
+            'name' => NULL,
+            'free' => 1,
+            'distance' => 71,
+            'lat' => 49.44336770000001,
+            'lon' => 1.0999304,
+          ],
+          4 => [
+            'type' => 0,
+            'name' => NULL,
+            'free' => 1,
+            'distance' => 74,
+            'lat' => 49.443131400000006,
+            'lon' => 1.0998674,
+          ],
+          5 => [
+            'type' => 0,
+            'name' => NULL,
+            'free' => 1,
+            'distance' => 79,
+            'lat' => 49.44402335,
+            'lon' => 1.099561066,
+          ],
+        ],
+        'distance_min' => 65,
+        'distance_max' => 65,
+      ],
+    ];
+
+    $this->assertEquals($expected, $actual);
+  }
 }

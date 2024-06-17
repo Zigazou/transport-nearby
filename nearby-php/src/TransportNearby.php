@@ -409,6 +409,8 @@ class TransportNearby
         'name' => $stopName,
         'free' => (integer) $stop['free'],
         'distance' => $distance,
+        'lat' => (float) $stop['lat'],
+        'lon' => (float) $stop['lon'],
       ];
     }
 
