@@ -193,6 +193,18 @@ class TransportNearby
   /**
    * Find stations near a given location.
    *
+   * It returns an array of stations.
+   * 
+   * Each station has the following keys:
+   * - id: The identifier of the station.
+   * - stop_name: The human name of the station.
+   * - route_short_name: The short name of the route.
+   * - route_long_name: The long name of the route.
+   * - school: A boolean indicating if the route is for school.
+   * - lat: Latitude of the station in degrees.
+   * - lon: Longitude of the station in degrees.
+   * - distance: distance in meters.
+   * 
    * @param float $latitude The latitude of the location in degrees.
    * @param float $longitude The longitude of the location in degrees.
    * @param float $maxDistance The maximum distance in meters.
@@ -260,7 +272,22 @@ class TransportNearby
   /**
    * Find stations near a given location and format the result by sorting and
    * eliminating duplicates.
-   *
+   * 
+   * It returns an array indexed by station names.
+   * 
+   * Each station contains the following keys:
+   * - points: An array routes stopping at the station.
+   * - distance_min: The minimum distance in meters.
+   * - distance_max: The maximum distance in meters.
+   * 
+   * Each point contains the following keys:
+   * - name: The name of the route.
+   * - long_name: The long name of the route.
+   * - school: A boolean indicating if the route is for school.
+   * - type: The network type (AST, ATM, FLX or BBC).
+   * - lat: The latitude of the station in degrees.
+   * - lon: The longitude of the station in degrees.
+   * 
    * @param float $latitude The latitude of the location in degrees.
    * @param float $longitude The longitude of the location in degrees.
    * @param float $maxDistance The maximum distance in meters.
@@ -326,6 +353,17 @@ class TransportNearby
   /**
    * Find cycle stops near a given location.
    *
+   * It returns an array of stops.
+   * 
+   * Each stop has the following keys:
+   * - id: The identifier of the cycle stop.
+   * - name: The human name of the cycle stop.
+   * - type: The type of the cycle stop.
+   * - free: A boolean indicating if the cycle stop is free.
+   * - lat: Latitude of the cycle stop in degrees.
+   * - lon: Longitude of the cycle stop in degrees.
+   * - distance: distance in meters.
+   * 
    * @param float $latitude The latitude of the location in degrees.
    * @param float $longitude The longitude of the location in degrees.
    * @param float $maxDistance The maximum distance in meters.
