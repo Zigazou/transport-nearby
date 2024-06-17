@@ -11,6 +11,82 @@ final class TransportNearbyTest extends TestCase
     $this->assertInstanceOf(TransportNearby::class, $transport);
   }
 
+  public function testDistance(): void
+  {
+    $this->assertEquals(
+      0.0,
+      TransportNearby::distance(
+        49.44211427302438,
+        1.1128162664422916,
+        49.44211427302438,
+        1.1128162664422916
+      )
+    );
+
+    $this->assertEquals(
+      100.40946864775566,
+      TransportNearby::distance(
+        49.43981292469885,
+        1.0980776668724,
+        49.43980933615112,
+        1.099466350800285
+      )
+    );
+  }
+
+  public function testComparePositions(): void
+  {
+    $this->assertEquals(
+      TransportNearby::DIRECTION_NONE,
+      TransportNearby::comparePositions(
+        49.44211427302438,
+        1.1128162664422916,
+        49.44211427302438,
+        1.1128162664422916
+      )
+    );
+
+    $this->assertEquals(
+      TransportNearby::DIRECTION_NORTH,
+      TransportNearby::comparePositions(
+        49.44211427302438,
+        1.1128162664422916,
+        49.44256492236086,
+        1.112777514980297
+      )
+    );
+
+    $this->assertEquals(
+      TransportNearby::DIRECTION_EAST,
+      TransportNearby::comparePositions(
+        49.44211427302438,
+        1.1128162664422916,
+        49.442134092944336,
+        1.11417724041354
+      )
+    );
+
+    $this->assertEquals(
+      TransportNearby::DIRECTION_SOUTH,
+      TransportNearby::comparePositions(
+        49.44211427302438,
+        1.1128162664422916,
+        49.441403478226576,
+        1.1127692367941273
+      )
+    );
+
+    $this->assertEquals(
+      TransportNearby::DIRECTION_WEST,
+      TransportNearby::comparePositions(
+        49.44211427302438,
+        1.1128162664422916,
+        49.44210357968021,
+        1.1115986497461678
+      )
+    );
+  }
+
   public function testIleLacroix(): void
   {
     $transport = new TransportNearby(dirname(__FILE__) . "/test-transport.db");
@@ -196,69 +272,69 @@ final class TransportNearbyTest extends TestCase
         'points' => [
           0 => [
             'type' => 4,
-            'name' => '1 - Général de Gaulle',
             'free' => 0,
-            'distance' => 25,
+            'distance' => 25.0,
             'lat' => 49.44329903078631,
             'lon' => 1.0986720509862948,
+            'direction' => TransportNearby::DIRECTION_SOUTHWEST,
           ],
         ],
-        'distance_min' => 25,
-        'distance_max' => 25,
+        'distance_min' => 25.0,
+        'distance_max' => 25.0,
       ],
-      '' =>   [
+      '#noname' => [
         'points' => [
           0 => [
             'type' => 1,
-            'name' => NULL,
             'free' => 0,
-            'distance' => 65,
+            'distance' => 65.0,
             'lat' => 49.442978,
             'lon' => 1.098388,
+            'direction' => TransportNearby::DIRECTION_SOUTHWEST,
           ],
           1 => [
             'type' => 0,
-            'name' => NULL,
             'free' => 1,
-            'distance' => 66,
+            'distance' => 66.0,
             'lat' => 49.44400637,
             'lon' => 1.098717453,
+            'direction' => TransportNearby::DIRECTION_NORTHWEST,
           ],
           2 => [
             'type' => 0,
-            'name' => NULL,
             'free' => 1,
-            'distance' => 70,
+            'distance' => 70.0,
             'lat' => 49.44347937,
             'lon' => 1.09992111,
+            'direction' => TransportNearby::DIRECTION_EAST,
           ],
           3 => [
             'type' => 0,
-            'name' => NULL,
             'free' => 1,
-            'distance' => 71,
+            'distance' => 71.0,
             'lat' => 49.44336770000001,
             'lon' => 1.0999304,
+            'direction' => TransportNearby::DIRECTION_EAST,
           ],
           4 => [
             'type' => 0,
-            'name' => NULL,
             'free' => 1,
-            'distance' => 74,
+            'distance' => 74.0,
             'lat' => 49.443131400000006,
             'lon' => 1.0998674,
+            'direction' => TransportNearby::DIRECTION_SOUTHEAST,
           ],
           5 => [
             'type' => 0,
-            'name' => NULL,
             'free' => 1,
-            'distance' => 79,
+            'distance' => 79.0,
             'lat' => 49.44402335,
             'lon' => 1.099561066,
+            'direction' => TransportNearby::DIRECTION_NORTHEAST,
           ],
         ],
-        'distance_min' => 65,
-        'distance_max' => 65,
+        'distance_min' => 65.0,
+        'distance_max' => 65.0,
       ],
     ];
 

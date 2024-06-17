@@ -10,7 +10,7 @@ class TransportNearby
    * 
    * @var float
    */
-  public const EARTH_DIAMETER = 12742000;
+  public const EARTH_DIAMETER = 12742142;
 
   /**
    * No direction.
@@ -76,6 +76,13 @@ class TransportNearby
   public const DIRECTION_NORTHWEST = 0b1101;
 
   /**
+   * The minimum distance in meters to determine direction.
+   * 
+   * @var float
+   */
+  public const MIN_DISTANCE = 5.0;
+
+  /**
    * The SQLiteDB database object.
    * 
    * @var SQLiteDB
@@ -94,7 +101,8 @@ class TransportNearby
   }
 
   /**
-   * Calculate the distance between two points on the Earth in meters.
+   * Calculate the distance between two points on the Earth in meters according
+   * to the Haversine formula.
    *
    * @param float $latitude1 The latitude of the first point in degrees.
    * @param float $longitude1 The longitude of the first point in degrees.
@@ -125,33 +133,39 @@ class TransportNearby
   }
 
   /**
-   * Compare two positions and return the distance in meters and the direction.
+   * Compare two positions and return the direction to go from the first point
+   * to the second.
    *
    * @param float $latitude1 The latitude of the first point in degrees.
    * @param float $longitude1 The longitude of the first point in degrees.
    * @param float $latitude2 The latitude of the second point in degrees.
    * @param float $longitude2 The longitude of the second point in degrees.
-   * @return array An array containing the distance in meters and the direction.
+   * @return integer The direction.
    */
   public static function comparePositions(
     float $latitude1,
     float $longitude1,
     float $latitude2,
     float $longitude2
-  ): array {
+  ): int {
+    $distance = self::distance(
+      $latitude1,
+      $longitude1,
+      $latitude2,
+      $longitude2
+    );
+
     $latitude1 = deg2rad($latitude1);
     $longitude1 = deg2rad($longitude1);
     $latitude2 = deg2rad($latitude2);
     $longitude2 = deg2rad($longitude2);
 
-    $distance = self::distance($latitude1, $longitude1, $latitude2, $longitude2);
-
-    if ($distance < 5.0) {
-      return [(integer) $distance, ''];
+    if ($distance < self::MIN_DISTANCE) {
+      return self::DIRECTION_NONE;
     }
 
     # Split the Earth in 8 directions
-    $sinAngle = sin(deg2rad(45 / 2));
+    $sinAngle = sin(deg2rad(45.0 / 2.0));
 
     $longitudeAngle =
       (asin($longitude2 - $longitude1) * self::EARTH_DIAMETER) / $distance;
@@ -173,7 +187,7 @@ class TransportNearby
       $direction |= self::DIRECTION_WEST;
     }
 
-    return [(integer) $distance, $direction];
+    return (integer) $direction;
   }
 
   /**
@@ -229,14 +243,14 @@ class TransportNearby
     $used = [];
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
       $nearPoints[] = [
-        'id' => $row['id'],
-        'stop_name' => $row['stop_name'],
-        'route_short_name' => $row['route_short_name'],
-        'route_long_name' => $row['route_long_name'],
-        'school' => $row['school'] === 1,
-        'lat' => $row['lat'],
-        'lon' => $row['lon'],
-        'distance' => $row['distance'],
+        'id' => (string) $row['id'],
+        'stop_name' => (string) $row['stop_name'],
+        'route_short_name' => (string) $row['route_short_name'],
+        'route_long_name' => (string) $row['route_long_name'],
+        'school' => (bool) ($row['school'] === 1),
+        'lat' => (float) $row['lat'],
+        'lon' => (float) $row['lon'],
+        'distance' => (float) $row['distance'],
       ];
     }
 
@@ -297,12 +311,12 @@ class TransportNearby
       $used[$key] = 1;
 
       $nearPoints[$stopName]['points'][] = [
-        'name' => $routeShortName,
-        'long_name' => $routeLongName,
-        'school' => $school,
-        'type' => $transportType,
-        'lat' => $station['lat'],
-        'lon' => $station['lon'],
+        'name' => (string) $routeShortName,
+        'long_name' => (string) $routeLongName,
+        'school' => (bool) $school,
+        'type' => (string) $transportType,
+        'lat' => (float) $station['lat'],
+        'lon' => (float) $station['lon'],
       ];
     }
 
@@ -356,13 +370,13 @@ class TransportNearby
     $stops = [];
     while ($stop = $result->fetchArray(SQLITE3_ASSOC)) {
       $stops[] = [
-        'id' => $stop['id'],
-        'name' => $stop['name'],
-        'type' => $stop['type'],
-        'free' => $stop['free'] === 1,
-        'lat' => $stop['lat'],
-        'lon' => $stop['lon'],
-        'distance' => $stop['distance'],
+        'id' => (string) $stop['id'],
+        'name' => (string) $stop['name'],
+        'type' => (integer) $stop['type'],
+        'free' => (bool) ($stop['free'] === 1),
+        'lat' => (float) $stop['lat'],
+        'lon' => (float) $stop['lon'],
+        'distance' => (float) $stop['distance'],
       ];
     }
 
@@ -372,10 +386,26 @@ class TransportNearby
   /**
    * Find cycle stops near a given location and format the result by sorting and
    * eliminating duplicates.
-   *
+   * 
+   * The result is an array of cycle stops indexed by the name of the cycle
+   * stop. If the cycle stop has no name, the index is '#noname'.
+   * 
+   * Each cycle stop contains the following keys:
+   * - points: An array of points.
+   * - distance_min: The minimum distance in meters.
+   * - distance_max: The maximum distance in meters.
+   * 
+   * Each point contains the following keys:
+   * - type: The type of the cycle stop.
+   * - free: A boolean indicating if the cycle stop is free.
+   * - distance: The distance in meters.
+   * - lat: The latitude of the cycle stop in degrees.
+   * - lon: The longitude of the cycle stop in degrees.
+   * 
    * @param float $latitude The latitude of the location in degrees.
    * @param float $longitude The longitude of the location in degrees.
    * @param float $maxDistance The maximum distance in meters.
+   * @return array
    */
   public function prettyFindCycleStops(
     float $latitude,
@@ -387,7 +417,7 @@ class TransportNearby
     $stops = $this->findCycleStops($latitude, $longitude, $maxDistance);
     foreach ($stops as $stop) {
       $distance = (integer) round($stop['distance']);
-      $stopName = $stop['name'];
+      $stopName = empty($stop['name']) ? '#noname' : $stop['name'];
 
       $direction = self::comparePositions(
         $latitude,
@@ -399,16 +429,16 @@ class TransportNearby
       if (!isset($nearPoints[$stopName])) {
         $nearPoints[$stopName] = [
           'points' => [],
-          'distance_min' => $distance,
-          'distance_max' => $distance,
+          'distance_min' => (float) $distance,
+          'distance_max' => (float) $distance,
         ];
       }
 
       $nearPoints[$stopName]['points'][] = [
-        'type' => $stop['type'],
-        'name' => $stopName,
+        'type' => (integer) $stop['type'],
         'free' => (integer) $stop['free'],
-        'distance' => $distance,
+        'distance' => (float) $distance,
+        'direction' => (integer) $direction,
         'lat' => (float) $stop['lat'],
         'lon' => (float) $stop['lon'],
       ];
