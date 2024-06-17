@@ -274,20 +274,7 @@ class TransportNearby
       $distance = (integer) round($station['distance']);
       $stopName = $station['stop_name'];
       $routeLongName = $station['route_long_name'];
-      switch(mb_substr($station['id'], 0, 4)) {
-        case 'ATM-':
-          $transportType = 'atoumod';
-          break;
-        case 'AST-':
-          $transportType = 'astuce';
-          break;
-        case 'FLX-':
-          $transportType = 'flixbus';
-          break;
-        default:
-          $transportType = 'unknown';
-          break;
-      }
+      $transportType = mb_substr($station['id'], 0, 3);
 
       if (!isset($nearPoints[$stopName])) {
         $nearPoints[$stopName] = [

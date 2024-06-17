@@ -27,61 +27,64 @@ from json import loads, load
 from requests import get, codes as HTTP_CODES
 
 SCRIPT_DIRECTORY = dirname(realpath(__file__))
-TRANSPORT_DB_SQL = SCRIPT_DIRECTORY + '/nearby-create-database.db.sql'
-CORRECTIONS_TXT = SCRIPT_DIRECTORY + '/nearby-create-database.corrections.txt'
+TRANSPORT_DB_SQL = SCRIPT_DIRECTORY + "/nearby-create-database.db.sql"
+CORRECTIONS_TXT = SCRIPT_DIRECTORY + "/nearby-create-database.corrections.txt"
 
 PERFORMANCE_SQLITE_PRAGMAS = {
-    'locking_mode': 'EXCLUSIVE',
-    'journal_mode': 'WAL',
-    'cache_size': '-512000',
-    'secure_delete': 'FALSE',
-    'synchronous': 'OFF',
-    'temp_store': 'MEMORY',
+    "locking_mode": "EXCLUSIVE",
+    "journal_mode": "WAL",
+    "cache_size": "-512000",
+    "secure_delete": "FALSE",
+    "synchronous": "OFF",
+    "temp_store": "MEMORY",
 }
 
 # DataGouvIds. Identifiers below have been extracted from the API
 # https://transport.data.gouv.fr/api/datasets
 DATA_FILES = {
     "astuce": {
-        'type': 'gtfs',
-        'description': 'Métropole Rouen Normandie Réseau Astuce GTFS data',
-        'datagouv_id': "5cd4321f8b4c4137d1244318",
-        'resource_id': 64973,
-        'temp_file': "/tmp/astuce.gtfs.zip"
+        "type": "gtfs",
+        "description": "Métropole Rouen Normandie Réseau Astuce GTFS data",
+        "datagouv_id": "5cd4321f8b4c4137d1244318",
+        "resource_id": 64973,
+        "temp_file": "/tmp/astuce.gtfs.zip",
     },
-
     "cycling": {
-        'type': 'csv',
-        'description': 'Métropole Rouen Normandie cycling data',
-        'datagouv_id': "61f3ef4cc1ed500d1b135719",
-        'resource_id': 79694,
-        'temp_file': "/tmp/cycling.csv"
+        "type": "csv",
+        "description": "Métropole Rouen Normandie cycling data",
+        "datagouv_id": "61f3ef4cc1ed500d1b135719",
+        "resource_id": 79694,
+        "temp_file": "/tmp/cycling.csv",
     },
-
     "lovélo": {
-        'type': 'gbfs',
-        'gbfs_key': "station_information",
-        'description': 'Métropole Rouen Normandie Lovélo data',
-        'datagouv_id': "64919d2f03c6861c686e0e87",
-        'resource_id': 81000,
-        'temp_file': "/tmp/lovelo.json"
+        "type": "gbfs",
+        "gbfs_key": "station_information",
+        "description": "Métropole Rouen Normandie Lovélo data",
+        "datagouv_id": "64919d2f03c6861c686e0e87",
+        "resource_id": 81000,
+        "temp_file": "/tmp/lovelo.json",
     },
-
     "atoumod": {
-        'type': 'gtfs',
-        'description': 'Région Normandie AtouMod GTFS data',
-        'datagouv_id': "5ced52ed8b4c4177b679d377",
-        'resource_id': 81628,
-        'temp_file': "/tmp/atoumod.gtfs.zip"
+        "type": "gtfs",
+        "description": "Région Normandie AtouMod GTFS data",
+        "datagouv_id": "5ced52ed8b4c4177b679d377",
+        "resource_id": 81628,
+        "temp_file": "/tmp/atoumod.gtfs.zip",
     },
-
     "flixbus": {
-        'type': 'gtfs',
-        'description': 'Flixbus GTFS data',
-        'datagouv_id': "5c6ad5248b4c411c3d7ae435",
-        'resource_id': 11681,
-        'temp_file': "/tmp/flixbus.gtfs.zip"
-    }
+        "type": "gtfs",
+        "description": "Flixbus GTFS data",
+        "datagouv_id": "5c6ad5248b4c411c3d7ae435",
+        "resource_id": 11681,
+        "temp_file": "/tmp/flixbus.gtfs.zip",
+    },
+    "blablacarbus": {
+        "type": "gtfs",
+        "description": "BlaBlaCar Bus GTFS data",
+        "datagouv_id": "5cdef3698b4c416d21fd76b9",
+        "resource_id": 52605,
+        "temp_file": "/tmp/blablacarbus.gtfs.zip",
+    },
 }
 
 
@@ -102,15 +105,44 @@ FIELD_IDS = ["trip_id", "stop_id", "route_id", "service_id", "cycle_id"]
 # Fields to drop from the GTFS data because they are not useful when one needs
 # to find the closest stop and routes to a given location.
 FIELD_DROPS = [
-    "agency_id", "stop_url", "stop_timezone", "stop_desc", "zone_id",
-    "route_desc", "route_color", "route_text_color", "route_url",
-    "route_sort_order", "stop_headsign", "shape_dist_traveled", "timepoint",
-    "trip_short_name", "trip_headsign", "block_id", "shape_id", "arrival_time",
-    "departure_time", "pickup_type", "drop_off_type", "monday", "tuesday",
-    "wednesday", "thursday", "friday", "saturday", "sunday", "stop_code",
-    "location_type", "parent_station", "bikes_allowed", "trip_bikes_allowed",
-    "platform_code", "stop_times.route_short_name", "trips.route_short_name",
-    "ticketing_trip_id", "ticketing_type"
+    "agency_id",
+    "stop_url",
+    "stop_timezone",
+    "stop_desc",
+    "zone_id",
+    "route_desc",
+    "route_color",
+    "route_text_color",
+    "route_url",
+    "route_sort_order",
+    "stop_headsign",
+    "shape_dist_traveled",
+    "timepoint",
+    "trip_short_name",
+    "trip_headsign",
+    "block_id",
+    "shape_id",
+    "arrival_time",
+    "departure_time",
+    "pickup_type",
+    "drop_off_type",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+    "stop_code",
+    "location_type",
+    "parent_station",
+    "bikes_allowed",
+    "trip_bikes_allowed",
+    "platform_code",
+    "stop_times.route_short_name",
+    "trips.route_short_name",
+    "ticketing_trip_id",
+    "ticketing_type",
 ]
 
 
@@ -139,7 +171,7 @@ def load_corrections(filename: str):
 CORRECTIONS = load_corrections(CORRECTIONS_TXT)
 
 
-class SQLiteDB():
+class SQLiteDB:
     """Context manager to handle a SQLite database connection."""
 
     def __init__(self, db_filename):
@@ -159,7 +191,7 @@ class SQLiteDB():
 
     def __exit__(self, *args):
         self.connection.commit()
-        
+
         # Let SQLite3 analyze the database to optimize future queries.
         self.cursor.execute("PRAGMA analysis_limit = 40000")
         self.cursor.execute("PRAGMA optimize")
@@ -178,7 +210,7 @@ def download_json(url: str):
     if res.status_code != HTTP_CODES.ok:
         raise CannotDownload("Failed to download JSON", url, res.status_code)
 
-    return loads(res.content.decode('utf-8'))
+    return loads(res.content.decode("utf-8"))
 
 
 def download_dataset_info(datagouvid: str):
@@ -203,7 +235,7 @@ def download_as(url: str, filename: str):
     if res.status_code != HTTP_CODES.ok:
         raise CannotDownload("Failed to download file", url, res.status_code)
 
-    with open(filename, 'wb') as file:
+    with open(filename, "wb") as file:
         for chunk in res.iter_content():
             file.write(chunk)
 
@@ -223,7 +255,7 @@ def load_csv_from_zip(zipfile: str, csvfile: str) -> list:
     return content
 
 
-def load_csv(csvfile: str, delimiter=',') -> list:
+def load_csv(csvfile: str, delimiter=",") -> list:
     """Load a CSV file.
 
     Args:
@@ -258,9 +290,9 @@ def sql_insert(table_name: str, record: dict, ignore=False) -> str:
         ignore (bool, optional): Whether to ignore duplicates when inserting.
             Defaults to False.
     """
-    columns = ', '.join(record.keys())
-    variables = ', '.join([':' + column for column in record.keys()])
-    ignore = ' OR IGNORE' if ignore else ''
+    columns = ", ".join(record.keys())
+    variables = ", ".join([":" + column for column in record.keys()])
+    ignore = " OR IGNORE" if ignore else ""
     return f"INSERT{ignore} INTO {table_name}({columns}) VALUES({variables});"
 
 
@@ -295,14 +327,10 @@ def import_table(cursor, table_name: str, base_id: str, records: list, ignore=Fa
         values = {
             key: (base_id + record[key] if key in FIELD_IDS else record[key])
             for key in record
-            if (key not in FIELD_DROPS and
-                f"{table_name}.{key}" not in FIELD_DROPS)
+            if (key not in FIELD_DROPS and f"{table_name}.{key}" not in FIELD_DROPS)
         }
 
-        cursor.execute(
-            sql_insert(table_name, values, ignore),
-            defaultdict(str, values)
-        )
+        cursor.execute(sql_insert(table_name, values, ignore), defaultdict(str, values))
 
 
 def derive_cycle_type(mobilier: str) -> int:
@@ -313,13 +341,7 @@ def derive_cycle_type(mobilier: str) -> int:
             'PARC', 'POTELET', 'RATELIER' and 'LOVELO'. Anything else will
             return -1.
     """
-    cycle_types = {
-        'ARCEAU': 0,
-        'PARC': 1,
-        'POTELET': 2,
-        'RATELIER': 3,
-        'LOVELO': 4
-    }
+    cycle_types = {"ARCEAU": 0, "PARC": 1, "POTELET": 2, "RATELIER": 3, "LOVELO": 4}
 
     return cycle_types[mobilier] if mobilier in cycle_types else -1
 
@@ -341,7 +363,7 @@ def derive_cycle_latitude(coordonneesxy: str) -> float:
         coordonneesxy (str): The coordonneesxy field. It is expected to be in
             the format '(latitude, longitude)'.
     """
-    return float(coordonneesxy[1:-1].split(',')[1])
+    return float(coordonneesxy[1:-1].split(",")[1])
 
 
 def derive_cycle_longitude(coordonneesxy: str) -> float:
@@ -351,7 +373,7 @@ def derive_cycle_longitude(coordonneesxy: str) -> float:
         coordonneesxy (str): The coordonneesxy field. It is expected to be in
             the format '(latitude, longitude)'.
     """
-    return float(coordonneesxy[1:-1].split(',')[0])
+    return float(coordonneesxy[1:-1].split(",")[0])
 
 
 def import_cycle_data(db_filename: str):
@@ -362,7 +384,7 @@ def import_cycle_data(db_filename: str):
     """
 
     # Métropole Rouen Normandie cycle data uses ';' as delimiter.
-    cycle_data = load_csv(DATA_FILES['cycling']['temp_file'], ';')
+    cycle_data = load_csv(DATA_FILES["cycling"]["temp_file"], ";")
 
     cycle_stops = [
         {
@@ -371,12 +393,13 @@ def import_cycle_data(db_filename: str):
             "cycle_lat": radians(derive_cycle_latitude(row["coordonneesxy"])),
             "cycle_lon": radians(derive_cycle_longitude(row["coordonneesxy"])),
             "cycle_type": derive_cycle_type(row["mobilier"]),
-            "cycle_free": derive_cycle_free(row["acces"])
-        } for row in cycle_data
+            "cycle_free": derive_cycle_free(row["acces"]),
+        }
+        for row in cycle_data
     ]
 
     with SQLiteDB(db_filename) as cursor:
-        import_table(cursor, 'cycle_stops', 'CYC-', cycle_stops)
+        import_table(cursor, "cycle_stops", "CYC-", cycle_stops)
 
 
 def import_lovelo(db_filename: str):
@@ -387,7 +410,7 @@ def import_lovelo(db_filename: str):
     """
 
     # Métropole Rouen Normandie cycle data uses ';' as delimiter.
-    with open(DATA_FILES['lovélo']['temp_file'], 'rb') as gbfs:
+    with open(DATA_FILES["lovélo"]["temp_file"], "rb") as gbfs:
         lovelo_data = load(gbfs)["data"]["stations"]
 
     lovelo_stops = [
@@ -397,12 +420,13 @@ def import_lovelo(db_filename: str):
             "cycle_lat": radians(float(row["lat"])),
             "cycle_lon": radians(float(row["lon"])),
             "cycle_type": derive_cycle_type("LOVELO"),
-            "cycle_free": derive_cycle_free("PAYANT")
-        } for row in lovelo_data
+            "cycle_free": derive_cycle_free("PAYANT"),
+        }
+        for row in lovelo_data
     ]
 
     with SQLiteDB(db_filename) as cursor:
-        import_table(cursor, 'cycle_stops', 'LOV-', lovelo_stops)
+        import_table(cursor, "cycle_stops", "LOV-", lovelo_stops)
 
 
 def import_gtfs_data(zipfile: str, base_id: str, db_filename: str):
@@ -418,53 +442,49 @@ def import_gtfs_data(zipfile: str, base_id: str, db_filename: str):
     datas = {}
 
     # Import routes while normalizing route_long_name.
-    datas['routes'] = []
-    for row in load_csv_from_zip(zipfile, 'routes.txt'):
+    datas["routes"] = []
+    for row in load_csv_from_zip(zipfile, "routes.txt"):
         route = row
-        route['route_long_name'] = normalize_name(row['route_long_name'])
-        datas['routes'].append(route)
+        route["route_long_name"] = normalize_name(row["route_long_name"])
+        datas["routes"].append(route)
 
-    datas['trips'] = load_csv_from_zip(zipfile, 'trips.txt')
-    datas['stop_times'] = load_csv_from_zip(zipfile, 'stop_times.txt')
+    datas["trips"] = load_csv_from_zip(zipfile, "trips.txt")
+    datas["stop_times"] = load_csv_from_zip(zipfile, "stop_times.txt")
 
-    datas['stops'] = []
-    for row in load_csv_from_zip(zipfile, 'stops.txt'):
+    datas["stops"] = []
+    for row in load_csv_from_zip(zipfile, "stops.txt"):
         # Ignore stops outside the Métropole Rouen Normandie.
-        latitude = float(row['stop_lat'])
+        latitude = float(row["stop_lat"])
         if latitude < MIN_LATITUDE or latitude > MAX_LATITUDE:
             continue
 
-        longitude = float(row['stop_lon'])
+        longitude = float(row["stop_lon"])
         if longitude < MIN_LONGITUDE or longitude > MAX_LONGITUDE:
             continue
 
         stop = row
-        stop['stop_name'] = normalize_name(row['stop_name'])
-        stop['stop_lat'] = radians(latitude)
-        stop['stop_lon'] = radians(longitude)
-        datas['stops'].append(stop)
+        stop["stop_name"] = normalize_name(row["stop_name"])
+        stop["stop_lat"] = radians(latitude)
+        stop["stop_lon"] = radians(longitude)
+        datas["stops"].append(stop)
 
     try:
-        datas['calendar'] = load_csv_from_zip(zipfile, 'calendar.txt')
-        datas['calendar_dates'] = None
+        datas["calendar"] = load_csv_from_zip(zipfile, "calendar.txt")
+        datas["calendar_dates"] = None
     except KeyError:
-        datas['calendar'] = None
-        datas['calendar_dates'] = load_csv_from_zip(
-            zipfile,
-            'calendar_dates.txt'
-        )
+        datas["calendar"] = None
+        datas["calendar_dates"] = load_csv_from_zip(zipfile, "calendar_dates.txt")
 
     with SQLiteDB(db_filename) as cursor:
-        import_table(cursor, 'routes', base_id, datas['routes'])
-        import_table(cursor, 'stops', base_id, datas['stops'])
-        import_table(cursor, 'stop_times', base_id, datas['stop_times'])
-        import_table(cursor, 'trips', base_id, datas['trips'])
+        import_table(cursor, "routes", base_id, datas["routes"])
+        import_table(cursor, "stops", base_id, datas["stops"])
+        import_table(cursor, "stop_times", base_id, datas["stop_times"])
+        import_table(cursor, "trips", base_id, datas["trips"])
 
-        if datas['calendar_dates']:
-            import_table(cursor, 'calendar_dates',
-                         base_id, datas['calendar_dates'])
+        if datas["calendar_dates"]:
+            import_table(cursor, "calendar_dates", base_id, datas["calendar_dates"])
         else:
-            import_table(cursor, 'calendar', base_id, datas['calendar'])
+            import_table(cursor, "calendar", base_id, datas["calendar"])
 
 
 def generate_gtfs_cache(db_filename: str):
@@ -493,11 +513,12 @@ def generate_gtfs_cache(db_filename: str):
             {
                 "stop_id": row["stop_id"],
                 "route_id": row["route_id"],
-                "school": 1 if row["service_id"].startswith('AST-IST') else 0
-            } for row in cursor.fetchall()
+                "school": 1 if row["service_id"].startswith("AST-IST") else 0,
+            }
+            for row in cursor.fetchall()
         ]
 
-        import_table(cursor, "cache_stop_routes", '', route_stops, True)
+        import_table(cursor, "cache_stop_routes", "", route_stops, True)
 
 
 def remove_trips(db_filename: str, trip_ids: list):
@@ -509,7 +530,7 @@ def remove_trips(db_filename: str, trip_ids: list):
     """
     with SQLiteDB(db_filename) as cursor:
         # Find all stops associated with the trip.
-        sql_params = ','.join(['?'] * len(trip_ids))
+        sql_params = ",".join(["?"] * len(trip_ids))
         sql = f"SELECT stop_id FROM stop_times WHERE trip_id IN ({sql_params})"
         cursor.execute(sql, trip_ids)
         stop_ids = {row["stop_id"] for row in cursor.fetchall()}
@@ -524,7 +545,7 @@ def remove_trips(db_filename: str, trip_ids: list):
         cursor.execute(sql, trip_ids)
 
         # Delete stops associated with the trip.
-        sql_params = ','.join(['?'] * len(stop_ids))
+        sql_params = ",".join(["?"] * len(stop_ids))
         sql = f"DELETE FROM stops WHERE stop_id IN ({sql_params})"
         cursor.execute(sql, list(stop_ids))
 
@@ -533,7 +554,7 @@ def remove_trips(db_filename: str, trip_ids: list):
         cursor.execute(sql, list(stop_ids))
 
         # Delete routes associated with the trip.
-        sql_params = ','.join(['?'] * len(route_ids))
+        sql_params = ",".join(["?"] * len(route_ids))
         sql = f"DELETE FROM routes WHERE route_id IN ({sql_params})"
         cursor.execute(sql, list(route_ids))
 
@@ -577,7 +598,7 @@ def remove_atoumod_duplicates(db_filename: str):
     AtouMod routes have the same name as Réseau Astuce routes but without '<>'.
 
     Args:
-        db_filename (str): The filename of the database.    
+        db_filename (str): The filename of the database.
     """
     with SQLiteDB(db_filename) as cursor:
         # Find all routes from Réseau Astuce.
@@ -591,19 +612,16 @@ def remove_atoumod_duplicates(db_filename: str):
             route_long_names.append(row["route_long_name"].replace("<>", "/"))
 
         # Find routes from AtouMod with the same long name.
-        sql_params = ','.join(['?'] * len(route_long_names))
+        sql_params = ",".join(["?"] * len(route_long_names))
         sql = f"""
             SELECT route_id
             FROM routes
             WHERE route_long_name IN ({sql_params})
             AND route_id LIKE 'ATM-%'
         """
-        route_ids = [
-            row["route_id"]
-            for row in cursor.execute(sql, route_long_names)
-        ]
+        route_ids = [row["route_id"] for row in cursor.execute(sql, route_long_names)]
 
-        sql_params = ','.join(['?'] * len(route_ids))
+        sql_params = ",".join(["?"] * len(route_ids))
 
         # Delete trips associated with the routes.
         sql = f"DELETE FROM trips WHERE route_id IN ({sql_params})"
@@ -638,7 +656,7 @@ def remove_orphaned_stop_times(db_filename: str):
         stop_ids = {row["stop_id"] for row in cursor.execute(sql)}
 
         # Delete orphaned stop_times.
-        sql_params = ','.join(['?'] * len(stop_ids))
+        sql_params = ",".join(["?"] * len(stop_ids))
         sql = f"DELETE FROM stop_times WHERE stop_id IN ({sql_params})"
         cursor.execute(sql, list(stop_ids))
 
@@ -662,7 +680,7 @@ def remove_orphaned_trips(db_filename: str):
         trip_ids = {row["trip_id"] for row in cursor.execute(sql)}
 
         # Delete orphaned trips.
-        sql_params = ','.join(['?'] * len(trip_ids))
+        sql_params = ",".join(["?"] * len(trip_ids))
         sql = f"DELETE FROM trips WHERE trip_id IN ({sql_params})"
         cursor.execute(sql, list(trip_ids))
 
@@ -686,7 +704,7 @@ def remove_orphaned_routes(db_filename: str):
         route_ids = {row["route_id"] for row in cursor.execute(sql)}
 
         # Delete orphaned routes.
-        sql_params = ','.join(['?'] * len(route_ids))
+        sql_params = ",".join(["?"] * len(route_ids))
         sql = f"DELETE FROM routes WHERE route_id IN ({sql_params})"
         cursor.execute(sql, list(route_ids))
 
@@ -706,7 +724,8 @@ def convert_calendar_dates(db_filename: str):
     """
     with SQLiteDB(db_filename) as cursor:
         # Convert calendar_dates to calendar.
-        cursor.execute("""
+        cursor.execute(
+            """
             INSERT INTO calendar(service_id, start_date, end_date)
             SELECT
                 service_id AS 'service_id',
@@ -714,7 +733,8 @@ def convert_calendar_dates(db_filename: str):
                 MAX(date) AS 'end_date' 
             FROM calendar_dates
             GROUP BY service_id
-        """)
+        """
+        )
 
         # Drop the original calendar_dates table.
         cursor.execute("DROP TABLE calendar_dates")
@@ -751,7 +771,7 @@ def get_resource(info: dict, res_id):
         info (dict): The dataset info.
         res_id (str): The ID of the ressource.
     """
-    return next((res for res in info['resources'] if res['id'] == res_id), None)
+    return next((res for res in info["resources"] if res["id"] == res_id), None)
 
 
 def get_gbfs_url(url: dict, feed_name: str):
@@ -763,9 +783,12 @@ def get_gbfs_url(url: dict, feed_name: str):
     """
     gbfs = download_json(url)
     return next(
-        (feed['url'] for feed in gbfs["data"]["fr"]["feeds"]
-         if feed["name"] == feed_name),
-        None
+        (
+            feed["url"]
+            for feed in gbfs["data"]["fr"]["feeds"]
+            if feed["name"] == feed_name
+        ),
+        None,
     )
 
 
@@ -776,7 +799,7 @@ def download_all_data():
     for data_info in DATA_FILES.values():
         # Determine if data has already been download less than one day ago.
         try:
-            file_age = getctime(data_info['temp_file'])
+            file_age = getctime(data_info["temp_file"])
             is_up_to_date = (time() - file_age) < one_day
         except FileNotFoundError:
             is_up_to_date = False
@@ -786,33 +809,39 @@ def download_all_data():
             continue
 
         step(f"Downloading {data_info['description']} metadata")
-        info = download_dataset_info(data_info['datagouv_id'])
+        info = download_dataset_info(data_info["datagouv_id"])
 
-        resource = get_resource(info, data_info['resource_id'])
+        resource = get_resource(info, data_info["resource_id"])
 
-        if data_info['type'] == 'gbfs':
+        if data_info["type"] == "gbfs":
             step("Get URL of Lovélo station information")
-            url = get_gbfs_url(resource['url'], data_info['gbfs_key'])
+            url = get_gbfs_url(resource["url"], data_info["gbfs_key"])
 
             step(f"Downloading {data_info['description']}")
-            download_as(url, data_info['temp_file'])
+            download_as(url, data_info["temp_file"])
         else:
             step(f"Downloading {data_info['description']}")
-            download_as(resource["url"], data_info['temp_file'])
+            download_as(resource["url"], data_info["temp_file"])
 
 
 def import_astuce_gtfs_data(db_filename: str):
     """Import Réseau Astuce GTFS data into the database."""
-    import_gtfs_data(DATA_FILES['astuce']['temp_file'], 'AST-', db_filename)
+    import_gtfs_data(DATA_FILES["astuce"]["temp_file"], "AST-", db_filename)
 
 
 def import_atoumod_gtfs_data(db_filename: str):
     """Import Réseau Astuce GTFS data into the database."""
-    import_gtfs_data(DATA_FILES['atoumod']['temp_file'], 'ATM-', db_filename)
+    import_gtfs_data(DATA_FILES["atoumod"]["temp_file"], "ATM-", db_filename)
+
 
 def import_flixbus_gtfs_data(db_filename: str):
     """Import FlixBus GTFS data into the database."""
-    import_gtfs_data(DATA_FILES['flixbus']['temp_file'], 'FLX-', db_filename)
+    import_gtfs_data(DATA_FILES["flixbus"]["temp_file"], "FLX-", db_filename)
+
+
+def import_blablacarbus_gtfs_data(db_filename: str):
+    """Import Blablacar Bus GTFS data into the database."""
+    import_gtfs_data(DATA_FILES["blablacarbus"]["temp_file"], "BBC-", db_filename)
 
 
 def generate_transport_database(db_filename: str):
@@ -832,6 +861,7 @@ def generate_transport_database(db_filename: str):
 
     process_steps = [
         ("Creating database", create_database),
+        ("Importing BlaBlaCar Bus GTFS data", import_blablacarbus_gtfs_data),
         ("Importing FlixBus GTFS data", import_flixbus_gtfs_data),
         ("Importing Réseau Astuce GTFS data", import_astuce_gtfs_data),
         ("Importing AtouMod GTFS data", import_atoumod_gtfs_data),

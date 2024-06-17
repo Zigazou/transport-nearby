@@ -95,6 +95,7 @@ Musee   Musée
 Embarcadere	Embarcadère
 Deville-les-Rouen	Déville-lès-Rouen
 Ile	Île
+ Cdg	Charles-de-Gaulle
 Ste 	Sainte 
 Ste-	Sainte-
 St-	Saint-
